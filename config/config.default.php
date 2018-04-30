@@ -42,6 +42,8 @@ return array(
         return preg_replace('/\=\d+/', '', $url);
     },
 
-    'profiler.options' => array(),
+    'profiler.options' => [
+        'ignored_functions' => [], // 'call_user_func', 'call_user_func_array'
+    ],
 
 );
