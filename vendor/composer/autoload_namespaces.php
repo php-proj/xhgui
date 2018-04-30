@@ -9,5 +9,7 @@ return array(
     'Xhgui_' => array($baseDir . '/src', $vendorDir . '/perftools/xhgui-collector/src'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Slim' => array($vendorDir . '/slim/slim'),
+    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Pimple' => array($vendorDir . '/pimple/pimple/lib'),
+    'Mongo' => array($vendorDir . '/alcaeus/mongo-php-adapter/lib/Mongo'),
 );

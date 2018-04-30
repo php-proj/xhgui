@@ -315,26 +315,39 @@ Releases / Changelog
 See the [releases](https://github.com/preinheimer/xhgui/releases) for changelogs,
 and release information.
 
-License
-=======
 
-Copyright (c) 2013 Mark Story & Paul Reinheimer
+### Mongo 索引添加
+db.results.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 432000 } )
+db.results.ensureIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )
+db.results.ensureIndex( { 'profile.main().wt' : -1 } )
+db.results.ensureIndex( { 'profile.main().mu' : -1 } )
+db.results.ensureIndex( { 'profile.main().cpu' : -1 } )
+db.results.ensureIndex( { 'meta.simple_url' : 1 } )
+db.results.ensureIndex( { 'meta.url' : 1 } )
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+### Nignx 配置
 
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
+要进行profile的站点，添加
+fastcgi_param PHP_VALUE "auto_prepend_file=\"/Users/clarkyu/code/php/xhgui/external/header.php\"";
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+server {
+    listen      80;
+    server_name xhgui.host;
+    root   /Users/clarkyu/code/php/xhgui/webroot;
+    index  index.php;
+
+    access_log /usr/local/var/log/nginx/xhgui.access.log main;
+    error_log /usr/local/var/log/nginx/xhgui.err;
+
+    location / {
+        index  index.php;
+        if (!-e $request_filename) {
+            rewrite . /index.php last;
+        }
+    }
+
+    location ~ \.php$ {
+        include include/php-fpm-content.conf;
+        try_files $uri $uri/ /index.php?$uri&$args;
+    }
+}

@@ -30,8 +30,12 @@ return array(
     // Profile 1 in 100 requests.
     // You can return true to profile every request.
     'profiler.enable' => function() {
-        return true;
-        // return rand(1, 100) === 42;
+        if ($_SERVER['SERVER_NAME'] == 'xhgui.host') {
+            return false;
+        }
+        else { // 100%采样，默认为1%
+            return true; //rand(1, 100) === 42;
+        }
     },
 
     'profiler.simple_url' => function($url) {
